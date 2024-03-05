@@ -1,0 +1,397 @@
+
+{%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+  
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+    
+    .collection__card-title-{{ section.id }}{
+      text-align: {{section.settings.column_alignment}};
+    }
+    .collection-splide__wrapper-{{section.id}} .feature-text-section, .collection-splide__wrapper-{{section.id}} .collection__splide_card--text{
+      background: {{section.settings.background_color}};
+      color: {{ section.settings.textcolor }};
+    }
+    .collection-splide__wrapper-align-{{section.id}}{
+      display: flex;
+      gap: 2rem;
+      flex-direction: {{ section.settings.image__alignment }}; 
+    }
+  {%- endstyle -%}
+{%- if section.settings.enable_quick_add -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<custom-productlist>
+  <div class=" collection-splide__wrapper-{{section.id }}">
+    <div class="collection-splide__wrapper collection-splide__wrapper-align-{{section.id}}  page-width section-{{ section.id }}-padding" >
+      <div class="feature-text-section ">
+        <div class="collection-splide__image--block">
+            {% if section.settings.block_image != blank %}
+                <img src="{{ section.settings.block_image |  image_url }}" alt="block-image">
+            {% endif  %}
+          <div class="{{ section.settings.column_alignment }} feature-text-block">
+            <div class="collection__splide_card--text inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"> {{ section.settings.inline}} </div>
+            <a class="button {% if section.settings.btnsecond %} button--secondary {% else %} button--primary {% endif %} " href="{{ section.settings.button_link }}">{{ section.settings.button_text }}</a>
+        </div>
+        </div>
+        
+      </div>
+      <div class="feature-slide-section collection_splide splide" aria-label="Splide Basic HTML Example" >
+        <div class="{{section.settings.collection_heading_size}} splide__product-card--heading">
+            <div>{{ section.settings.card_heading }}</div>
+            
+        </div>
+        <div class="splide__track">
+          <ul class="splide__list">
+            {% for myproduct in section.settings.collection_list.products %}
+                <li
+                    id="tab-{{ forloop.index }}-{{product.id}}"
+                    class="splide__slide splide_product-card"
+                    role="list item">
+                    {% render 'card-product'
+                    , card_product: myproduct
+                    , media_aspect_ratio: section.settings.image_ratio
+                    , show_secondary_image: section.settings.show_secondary_image
+                    , show_vendor: section.settings.show_vendor
+                    , show_rating: section.settings.show_rating
+                    , show_quick_add: section.settings.enable_quick_add
+                    , section_id: block.id
+                    %}
+                </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="my-slider-progress">
+            <div class="my-carousel-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</custom-productlist>
+  
+{% style %}
+  .feature-text-section{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+  }
+  .feature-text-section a{
+    margin-top: 3rem;
+    width: 100%;
+  }
+  .feature-slide-section{
+    width:70%;
+  }
+ /* component-media */
+.media {
+  display: block;
+  background-color: rgba(var(--color-foreground), 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+  .collection-splide__wrapper  .feature-text-block{
+      padding: 3rem 3.2rem 3rem 3.2rem;
+  }
+  .collection_cards-splide img{
+    width:100%
+  }
+  .collection__card-title{
+    font-size: 2rem;
+    padding: 1rem;
+  }
+  .splide_product-link{
+    text-decoration: none;
+    color: rgba(var(--color-foreground),.75);
+  }
+  .collection-splide__image--block img{
+      width: 100%;
+      height: 100%;
+  }
+  .collection-splide__wrapper .splide__product-card--heading{
+      margin-top: 1rem;
+      margin-bottom: 4rem;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+  }
+  .collection_splide .splide_product-card{
+    padding: 5px;
+  }
+  /* progressbar  */
+  .my-slider-progress {
+      background: #c0b1b5;
+      margin-top: 1rem;
+  }
+  
+  .my-carousel-progress-bar {
+      display: block !important;
+      background: #715059;
+      height: 3px;
+      transition: width 400ms ease;
+      width: 0;
+  }
+  /* endprogressbar */
+  .collection-splide__wrapper .splide__card-btn--wrapper{
+      display: flex;
+      gap: 2rem;
+
+  }
+  .collection-splide__wrapper .splide__card-btn--wrapper span{
+      padding: 1.5rem;
+      width: 40px;
+      border-radius: 50px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #715059;
+      cursor: pointer;
+  }
+  .collection-splide__wrapper .splide__arrows .splide__arrow{
+    opacity:0;
+    height:0;
+    width:0;
+  }
+  .collection-splide__wrapper .splide__card-btn--wrapper span:hover{
+      background: #715059;
+  }
+  .collection-splide__wrapper .splide__card-btn--wrapper span svg path{
+      stroke:  #715059;
+  }
+  .collection-splide__wrapper .splide__card-btn--wrapper span:hover svg path{
+      stroke:  #fff;
+  }
+
+  @media screen and (max-width:990px){
+    .feature-text-section{
+      display: none;
+    }
+    .feature-slide-section{
+      width: 100%;
+    }
+    .my-slider-progress {
+        opacity: 0;
+    }
+  }
+{% endstyle %}
+  
+  {% schema %}
+    {
+      "name": "splide product",
+      "settings":[
+        {
+            "type": "image_picker",
+            "id": "block_image",
+            "label": "Image"
+        },
+        {
+            "type": "select",
+            "id": "image__alignment",
+            "label": "Image Position",
+            "options": [
+                {
+                "value": "row",
+                "label": "Image First"
+                },
+                {
+                "value": "row-reverse",
+                "label": "Image Second"
+                }
+            ],
+            "default": "row"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "inline",
+          "default": "my <i>inline</i> <b>text</b>",
+          "label": "Inline rich text"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__3.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Button"
+        },
+        {
+            "type": "checkbox",
+            "id": "btnsecond",
+            "label": "Outline Button",
+            "default": false
+        },
+        {
+          "type": "collection",
+          "id": "collection_list",
+          "label": "Collections"
+        },
+        {
+          "type": "select",
+          "id": "column_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.multicolumn.settings.column_alignment.options__1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.multicolumn.settings.column_alignment.options__2.label"
+            },
+            {
+              "value": "right",
+              "label": "right"
+            }
+          ],
+          "default": "left",
+          "label": "t:sections.multicolumn.settings.column_alignment.label"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Card Background",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "textcolor",
+          "label": "Text Color",
+          "default": "#000"
+        },
+        {
+        "type": "header",
+        "content": "t:sections.featured-collection.settings.header.content"
+        }, 
+        {
+          "type": "inline_richtext",
+          "id": "card_heading",
+          "default": "Heading",
+          "label": "collection heading text"
+        },
+        {
+          "type": "select",
+          "id": "collection_heading_size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__3.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        },
+        {
+            "type": "select",
+            "id": "image_ratio",
+            "options": [
+                {
+                    "value": "adapt",
+                    "label": "t:sections.featured-collection.settings.image_ratio.options__1.label"
+                }, {
+                    "value": "portrait",
+                    "label": "t:sections.featured-collection.settings.image_ratio.options__2.label"
+                }, {
+                    "value": "square",
+                    "label": "t:sections.featured-collection.settings.image_ratio.options__3.label"
+                }
+            ],
+            "default": "adapt",
+            "label": "t:sections.featured-collection.settings.image_ratio.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_secondary_image",
+            "default": false,
+            "label": "t:sections.featured-collection.settings.show_secondary_image.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_vendor",
+            "default": false,
+            "label": "t:sections.featured-collection.settings.show_vendor.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_rating",
+            "default": false,
+            "label": "t:sections.featured-collection.settings.show_rating.label",
+            "info": "t:sections.featured-collection.settings.show_rating.info"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_quick_add",
+            "default": false,
+            "label": "t:sections.featured-collection.settings.enable_quick_buy.label"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_top",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 36
+        }
+      ],
+      "presets": [
+        {
+          "name": "splide product"
+        }
+      ]
+    }
+  {% endschema %}

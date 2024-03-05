@@ -1,0 +1,125 @@
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.0.7/dist/css/splide.min.css">
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+></script>
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.0.7/dist/js/splide.min.js"></script>
+
+<div class="video-with-slider_section">
+  <div class="video-with-slider_wrapper">
+    <div class="video-with-slider-sliders_wrapper">
+      <div id="slider_custom" class="splide">
+        <div class="splide__track">
+          <ul class="splide__list">
+            {% for block in section.blocks %}
+              {% if block.type == 'slide' %}
+                {% if forloop.index == 1 %}
+                  <li class="splide__slide">
+                    <img src="{{ block.settings.image | img_url:'master' }}" alt="image">
+                  </li>
+                {% endif %}
+                 {% endif %}
+                {% if block.type == 'featured_collection' %}
+                <li class="splide__slide">
+                  <div class="">
+                  {%- assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1 -%}
+                    {%- assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index -%}
+                    {% render 'card-collection',
+                      card_collection: block.settings.collection,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      columns: columns,
+                      placeholder_image: placeholder_image
+                    %}
+                  </div>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+      document.addEventListener( 'DOMContentLoaded', function () {
+      new Splide('#slider_custom', {
+        type: 'slide',
+        perPage: 4,
+        height:"600px",
+        autoplay: false,
+        pagination:false,
+        interval: 8000,
+        arrows: false,
+        breakpoints: {
+          1440: {
+            perPage: 4
+          },
+           1024: {
+            perPage: 3
+          },
+           768: {
+            perPage: 2,
+           arrows: true,
+          },
+          540: {
+            perPage: 1
+          },
+        }
+      }).mount();
+    });
+
+
+ 
+</script>
+
+{% schema %}
+  {
+    "name": "Collection Slider",
+     "class": "review_video-slider",
+    "settings": [
+
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Image with text",
+          "label": "Main Heading"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "sub-heading",
+          "default": "Sub-heading",
+          "label": "Sub Heading"
+        }
+
+    ],
+  "blocks": [
+     {
+      "type": "slide",
+      "name": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "upload image"
+        }
+      ]
+    },{
+      "type": "featured_collection",
+      "name": "collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection-list.blocks.featured_collection.settings.collection.label"
+        }
+      ]
+    }
+  ],
+     "presets": [
+  {
+    "name": "Collection Slider"
+  }
+]
+}
+{% endschema %}
